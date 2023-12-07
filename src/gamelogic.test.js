@@ -1,20 +1,48 @@
 import {
-    capitilize
+    shipFactory
 } from './gamelogic'
 
 
-test('capitalize single letter', () => {
-    expect(capitilize("a")).toBe("A")
-});
+describe("ship tests", () => {
+    let testShip;
+    beforeEach(() => {
+        testShip = shipFactory(5);
+    });
 
-test('capitalize empty string', () => {
-    expect(capitilize("")).toBe("")
-});
+    test('new ship has 0 hits', () => {
+        expect(testShip.hits).toBe(0)
+    });
 
-test('capitilize sentence with whitespace', () => {
-    expect(capitilize("test number\n three")).toBe("Test number\n three")
-});
+    test('new ship have length specified', () => {
+        expect(shipFactory(3).length).toBe(3)
+    });
 
-test('capitalize doesnt alter numerical characters', () => {
-    expect(capitilize("555")).toBe("555")
-});
+    test('hit increases hits by one', () => {
+        expect((() => {
+            testShip.hit();
+            return testShip.hits
+        })()).toBe(1)
+    });
+
+    test('4 hits dont sink length 5 ship', () => {
+        expect((() => {
+            testShip.hit();
+            testShip.hit();
+            testShip.hit();
+            testShip.hit();
+            return testShip.isSunk()
+        })()).toBe(false)
+    });
+
+    test('5 hits sink length 5 ship', () => {
+        expect((() => {
+            testShip.hit();
+            testShip.hit();
+            testShip.hit();
+            testShip.hit();
+            testShip.hit();
+            return testShip.isSunk()
+        })()).toBe(true)
+    });
+})
+

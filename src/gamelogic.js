@@ -1,6 +1,16 @@
-function capitilize(text){
-    return text.length > 0 ? text[0].toUpperCase() + text.slice(1) : ""
+function shipFactory(length){
+    return {
+        length,
+        hits: 0,
+        hit (){
+            this.hits++
+        },
+        isSunk(){
+            return this.hits >= this.length;
+        }
+    }
 }
-console.log("hello")
 
-export {capitilize}
+
+
+export {shipFactory}
