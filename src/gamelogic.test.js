@@ -1,6 +1,7 @@
 import {
     shipFactory,
-    gameBoardFactory
+    gameBoardFactory,
+    filterCoordinates
 } from './gamelogic'
 
 
@@ -107,6 +108,19 @@ describe("board tests", () => {
             testBoard.recieveAttack(0,4)
             testBoard.recieveAttack(8,9)
             expect(testBoard.allSunk()).toBe(true)
+        });
+
+        test('filters coordinates outside board and on sunk ship', () => {
+            let possibleCoordinates = [
+                {row: 1, column: 1},
+                {row: -1, column: 9},
+                {row: 0, column: 3},
+                {row: 8, column: 9},
+                {row: 9, column: 9},
+                {row: 3, column: 2},
+                {row: 3, column: 10},
+            ];
+            expect(filterCoordinates(testBoard, possibleCoordinates).length).toBe(2)
         });
 
     });
