@@ -80,16 +80,16 @@ describe("board tests", () => {
 
     describe("placing and attacking ships", () => {
 
-        test('can place ship in upper left corner horizontal without throwing', () => {
-            expect(() => testBoard.placeShip(0, 0, false, testShip2)).not.toThrow()
+        test('can place ship in upper left corner horizontal', () => {
+            expect(testBoard.placeShip(0, 0, false, testShip2)).toBe(true)
         });
 
-        test('can place ship in lower right corner vertically without throwing', () => {
-            expect(() => testBoard.placeShip(8, 9, true, testShip1)).not.toThrow()
+        test('can place ship in lower right corner vertically', () => {
+            expect(testBoard.placeShip(8, 9, true, testShip1)).toBe(true)
         });
 
-        test('trying to place outside board throws error', () => {
-            expect(() => testBoard.placeShip(-1, 9, true, testShip1)).toThrow()
+        test('cant place outside board', () => {
+            expect(testBoard.placeShip(-1, 9, true, testShip1)).toBe(false)
         });
 
         test('attack on ship locations are hits', () => {
