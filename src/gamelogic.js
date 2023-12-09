@@ -73,9 +73,9 @@ function aiPlace(gameBoard, shipList){
 
 function aiShoot(player, gameBoard){
     let target = aiMove(gameBoard);
-    console.log("tries to shoot row:"  + target.row + "col: " + target.column)
+    //console.log("tries to shoot row:"  + target.row + "col: " + target.column)
     if (gameBoard.recieveAttack(target.row, target.column)){
-        console.log("its a hit");
+        //console.log("its a hit");
     };
     if (target.row == undefined) throw new Error(player.playerName + " didn't find a target");
     return true;
@@ -93,10 +93,10 @@ function aiMove(gameBoard){
                 targetList.push({row: i, column: j});
         }
     }
-    console.log("targets: " + targetList.length)
+    //console.log("targets: " + targetList.length)
 
     if (targetList.length > 0) return aiTargetMove(gameBoard, targetList[Math.floor(Math.random()*targetList.length)]);
-    console.log("going to searchmove")
+    //console.log("going to searchmove")
     return aiSearchMove(gameBoard);
 }
 
@@ -113,22 +113,18 @@ function aiSearchMove(gameBoard){
         }
     }
 
-    //filter goodshots for the ones where the most open distance around them
+    //filter goodshots for the ones where the most open straigth distance around them
     goodShots.forEach(element => element.openSum = sumOpenDistance(gameBoard, element));
     let greatestOpen = goodShots.reduce((greatest, element) => element.openSum > greatest ? element.openSum : greatest, 0);
     goodShots = goodShots.filter(element => element.openSum == greatestOpen);
-    //filter for the ones with the highest shortest open distance around them
-    goodShots.forEach(element => element.shortestOpen = shortestOpenDistance(gameBoard, element));
-    let greatestShortest = goodShots.reduce((greatest, element) => element.shortestOpen > greatest ? element.shortestOpen : greatest, 0);
-    goodShots = goodShots.filter(element => element.shortestOpen == greatestShortest);
-    console.log(goodShots)
+    //console.log(goodShots)
     //chose one at random
     return goodShots[Math.floor(Math.random()*goodShots.length)];
 }
 
 //tries to sink boat thats been found but not sunk
 function aiTargetMove(gameBoard, target){
-    console.log("targeting row: " + target.row + " column: " + target.column)
+   // console.log("targeting row: " + target.row + " column: " + target.column)
     let surrounding = [
         {row: target.row+1, column: target.column},
         {row: target.row-1, column: target.column},
@@ -163,8 +159,8 @@ function aiTargetMove(gameBoard, target){
         if (verticalNegDistance == longest)
             return possibleCoordinates.reduce((lowestVertical, coordinate) => coordinate.row <= lowestVertical.row ? coordinate : lowestVertical);
         if (horizontalPosDistance  == longest)
-            return possibleCoordinates.reduce((highestHorizontal, coordinate) => coordinate.column >= highestHorizontal.row ? coordinate : highestHorizontal);
-        return possibleCoordinates.reduce((lowestHorizontal, coordinate) => coordinate.column <= lowestHorizontal.row ? coordinate : lowestHorizontal);
+            return possibleCoordinates.reduce((highestHorizontal, coordinate) => coordinate.column >= highestHorizontal.column ? coordinate : highestHorizontal);
+        return possibleCoordinates.reduce((lowestHorizontal, coordinate) => coordinate.column <= lowestHorizontal.column ? coordinate : lowestHorizontal);
     } else if (attackedVerticalDistance > attackedHorizontalDistance){
         longest = Math.max(verticalPosDistance, verticalNegDistance);
         if (verticalPosDistance  == longest)
@@ -173,8 +169,8 @@ function aiTargetMove(gameBoard, target){
     } else {
         longest = Math.max(horizontalPosDistance, horizontalNegDistance);
         if (horizontalPosDistance  == longest)
-            return possibleCoordinates.reduce((highestHorizontal, coordinate) => coordinate.column >= highestHorizontal.row ? coordinate : highestHorizontal);
-        return possibleCoordinates.reduce((lowestHorizontal, coordinate) => coordinate.column <= lowestHorizontal.row ? coordinate : lowestHorizontal);
+            return possibleCoordinates.reduce((highestHorizontal, coordinate) => coordinate.column >= highestHorizontal.column ? coordinate : highestHorizontal);
+        return possibleCoordinates.reduce((lowestHorizontal, coordinate) => coordinate.column <= lowestHorizontal.column ? coordinate : lowestHorizontal);
     }
 
     return {row: 0, column: 0};
@@ -198,16 +194,6 @@ function sumOpenDistance(gameBoard, start){
     sum += openDistance(gameBoard, start, false, 1);
     return sum + openDistance(gameBoard, start, false, -1);
 }
-
-function shortestOpenDistance(gameBoard, start){
-    return Math.min(...[
-        openDistance(gameBoard, start, true, 1),
-        openDistance(gameBoard, start, true, -1),
-        openDistance(gameBoard, start, false, 1),
-        openDistance(gameBoard, start, false, -1)
-    ]);
-}
-
 
 function openDistance(gameBoard, start, vertical, step){
     let startCopy = {row: start.row, column: start.column}
