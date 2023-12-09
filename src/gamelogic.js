@@ -105,13 +105,25 @@ function aiSearchMove(gameBoard){
     //find length of shortest unsunk ship
     let shortShip = gameBoard.shipList.reduce((shortest, ship) => !ship.isSunk() && ship.length < shortest ? ship.length : shortest, 1000000);
     let goodShots = [];
+    let newShot;
+    let maxTargetValue = 0;
     for (let row = 0; row < gameBoard.height; row++){
         for (let column = 0; column < gameBoard.width; column++){
             if ((row + column) % shortShip != 0) continue;
             if (gameBoard.board[row][column].isAttacked) continue;
-            goodShots.push({row, column});
+            newShot = {row, column, targetValue: 0};
+            gameBoard.shipList.forEach(ship => {
+                if (ship.isSunk()) return;
+                if ((row + column) % ship.length == 0)
+                    newShot.targetValue += 1;
+            });
+            if (newShot.targetValue > maxTargetValue);
+                maxTargetValue = newShot.targetValue;
+            goodShots.push(newShot);
         }
     }
+    //filter for target value
+    goodShots = goodShots.filter(element => element.targetValue == maxTargetValue);
 
     //filter goodshots for the ones where the most open straigth distance around them
     goodShots.forEach(element => element.openSum = sumOpenDistance(gameBoard, element));
