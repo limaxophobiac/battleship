@@ -3,7 +3,8 @@ import {
     gameBoardFactory,
     filterCoordinates,
     openDistance,
-    aiMove
+    aiMove,
+    aiShoot
 } from './gamelogic'
 
 
@@ -140,11 +141,50 @@ describe("board tests", () => {
             expect(openDistance(testBoard, {row: 4, column: 3}, false, -1)).toBe(0)
         });
 
-        test('correctly choses targetetMove and shoots correct location', () => {
+       test('correctly choses targetetMove and shoots correct location', () => {
             testBoard.recieveAttack(4,5);
             expect(aiMove(testBoard)).toMatchObject({row: 4, column: 6})
         });
 
+
+
+    });
+
+    describe("ai targeting tests", () => {
+        let testBoard2 = gameBoardFactory(10, 10);
+        let testShip22 = shipFactory(2);
+        let testShip24 = shipFactory(4);
+        let testShip25 = shipFactory(5);
+        let testShip242 = shipFactory(4);
+
+        testBoard2.placeShip(0, 0, false, testShip22)
+        testBoard2.placeShip(2, 4, true, testShip24)
+        testBoard2.placeShip(8, 5, false, testShip25)
+        testBoard2.placeShip(9, 0, true, testShip25)
+
+        test('can shoot on fresh board', () => {
+            expect(() => {
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test"}, testBoard2);
+
+            }).not.toThrow()
+        });
+
+        
     });
 
 })
