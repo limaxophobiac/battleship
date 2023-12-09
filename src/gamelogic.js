@@ -116,7 +116,7 @@ function aiSearchMove(gameBoard){
     //filter for target value
 
     //filter goodshots for the ones where the most open straigth distance around them
-    goodShots.forEach(element => element.openSum = sumOpenDistance(gameBoard, element, shortShip));
+    goodShots.forEach(element => element.openSum = sumOpenDistance(gameBoard, element));
     let greatestOpen = goodShots.reduce((greatest, element) => element.openSum > greatest ? element.openSum : greatest, 0);
     goodShots = goodShots.filter(element => element.openSum == greatestOpen);
     //console.log(goodShots)
@@ -189,12 +189,12 @@ function attackedLength(gameBoard, start, vertical, step){
     return attackedLength;
 }
 
-function sumOpenDistance(gameBoard, start, shortShip){
+function sumOpenDistance(gameBoard, start){
     let vertPos = openDistance(gameBoard, start, true, 1);
     let vertNeg = openDistance(gameBoard, start, true, -1);
     let horPos = openDistance(gameBoard, start, false, 1);
     let horNeg = openDistance(gameBoard, start, false, -1);
-    return vertPos + vertNeg + horPos + horNeg;
+    return vertPos + vertNeg + 2*(vertPos < vertNeg ? vertPos : vertNeg) + horPos + horNeg + 2*(horPos < horNeg ? horPos : horNeg);
 }
 
 function openDistance(gameBoard, start, vertical, step){
