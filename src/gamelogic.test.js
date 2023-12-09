@@ -134,14 +134,15 @@ describe("board tests", () => {
 
         test('finds open distance to sunken ship next square', () => {
             let testShip4 = shipFactory(2);
-            testBoard.placeShip(4,2, true, testShip4);
-            testBoard.recieveAttack(4,2);
+            testBoard.placeShip(3,3, true, testShip4);
+            testBoard.recieveAttack(3,3);
             testBoard.recieveAttack(4,3);
             expect(openDistance(testBoard, {row: 4, column: 3}, false, -1)).toBe(0)
         });
 
-        test('shooting doesnt throw', () => {
-            expect(() => aiMove(testBoard)).not.toThrow()
+        test('correctly choses targetetMove and shoots correct location', () => {
+            testBoard.recieveAttack(4,5);
+            expect(aiMove(testBoard)).toMatchObject({row: 4, column: 6})
         });
 
     });

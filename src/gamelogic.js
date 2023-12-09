@@ -104,6 +104,7 @@ function aiTargetMove(gameBoard, target){
     ];
     
     //find best directions
+
     let possibleCoordinates = findCoordinates(gameBoard, surrounding, target);
 
     let highestRow = possibleCoordinates.reduce((highest, coordinate)  => coordinate.row > highest ? coordinate.row : highest, target.row+1);
@@ -115,10 +116,14 @@ function aiTargetMove(gameBoard, target){
     let verticalNegDistance = openDistance(gameBoard, {row: lowestRow, column: target.column}, true, -1);
     let horizontalPosDistance = openDistance(gameBoard, {row: target.row, column: highestColumn}, false, 1);
     let horizontalNegDistance = openDistance(gameBoard, {row: target.row, column: lowestColumn}, false, -1);
-
+    console.log("highestRow: " + highestRow + "\nlowestRow: " + lowestRow +"\nhighestColumn: " + highestColumn + "\nlowestColumn: " + lowestColumn);
     let longest;
+
+    let attackedVerticalDistance = Math.max(attackedLength(gameBoard, {row: highestRow-1, column: target.column}, true, -1), attackedLength(gameBoard, {row: lowestRow+1, column: target.column}, true, 1));
+    let attackedHorizontalDistance = Math.max(attackedLength(gameBoard, {row: target.row, column: highestColumn-1}, false, -1), attackedLength(gameBoard, {row: target.row, column: lowestColumn+1}, false, 1));
     //shoot in continous unsunk ship direction
-    if (highestRow - lowestRow == highestColumn - lowestColumn){
+    console.log("distance Vertical: " + attackedVerticalDistance + "\ndistance Horizontal: " + attackedHorizontalDistance)
+    if (attackedVerticalDistance == attackedHorizontalDistance){
         longest = Math.max(verticalPosDistance, verticalNegDistance, horizontalPosDistance, horizontalNegDistance);
         if (verticalPosDistance  == longest)
             return possibleCoordinates.reduce((highestVertical, coordinate) => coordinate.row >= highestVertical.row ? coordinate : highestVertical, target);
@@ -127,7 +132,7 @@ function aiTargetMove(gameBoard, target){
         if (horizontalPosDistance  == longest)
             return possibleCoordinates.reduce((highestHorizontal, coordinate) => coordinate.column >= highestHorizontal.row ? coordinate : highestHorizontal, target);
         return possibleCoordinates.reduce((lowestHorizontal, coordinate) => coordinate.column <= lowestHorizontal.row ? coordinate : lowestHorizontal, target);
-    } else if (highestRow - lowestRow > highestColumn - lowestColumn){
+    } else if (attackedVerticalDistance > attackedHorizontalDistance){
         longest = Math.max(verticalPosDistance, verticalNegDistance);
         if (verticalPosDistance  == longest)
             return possibleCoordinates.reduce((highestVertical, coordinate) => coordinate.row >= highestVertical.row ? coordinate : highestVertical, target);
@@ -140,6 +145,17 @@ function aiTargetMove(gameBoard, target){
     }
 
     return {row: 0, column: 0};
+}
+
+function attackedLength(gameBoard, start, vertical, step){
+    let attackedLength = 0;
+    while (filterCoordinates(gameBoard, [start]).length > 0 && gameBoard.board[start.row][start.column].isAttacked){
+        attackedLength++;
+        if (vertical) start.row += step;
+        else start.column += step;
+    }
+
+    return attackedLength;
 }
 
 function openDistance(gameBoard, start, vertical, step){
@@ -156,6 +172,7 @@ function openDistance(gameBoard, start, vertical, step){
 //finds first possible attack locations in both x and y directions
 function findCoordinates(gameBoard, possibleCoordinates, target){
     possibleCoordinates = filterCoordinates(gameBoard, possibleCoordinates);
+
     //find any squares around target that are hits, search for first open square in those directions
     while (possibleCoordinates.some(coordinate => gameBoard.board[coordinate.row][coordinate.column].isAttacked)){
         for (let i = 0; i < possibleCoordinates.length; i++){
@@ -167,6 +184,7 @@ function findCoordinates(gameBoard, possibleCoordinates, target){
                 else possibleCoordinates[i].column -= 1;
             }
         }
+
         possibleCoordinates = filterCoordinates(gameBoard, possibleCoordinates);
     }
     return possibleCoordinates;
