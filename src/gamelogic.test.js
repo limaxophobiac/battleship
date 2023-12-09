@@ -1,7 +1,9 @@
 import {
     shipFactory,
     gameBoardFactory,
-    filterCoordinates
+    filterCoordinates,
+    openDistance,
+    aiMove
 } from './gamelogic'
 
 
@@ -121,6 +123,25 @@ describe("board tests", () => {
                 {row: 3, column: 10},
             ];
             expect(filterCoordinates(testBoard, possibleCoordinates).length).toBe(2)
+        });
+
+        test('finds open distance to wall', () => {
+            let testShip3 = shipFactory(3);
+            testBoard.placeShip(4,4, false, testShip3);
+            testBoard.recieveAttack(4,4);
+            expect(openDistance(testBoard, {row: 4, column: 5}, false, 1)).toBe(5)
+        });
+
+        test('finds open distance to sunken ship next square', () => {
+            let testShip4 = shipFactory(2);
+            testBoard.placeShip(4,2, true, testShip4);
+            testBoard.recieveAttack(4,2);
+            testBoard.recieveAttack(4,3);
+            expect(openDistance(testBoard, {row: 4, column: 3}, false, -1)).toBe(0)
+        });
+
+        test('shooting doesnt throw', () => {
+            expect(() => aiMove(testBoard)).not.toThrow()
         });
 
     });

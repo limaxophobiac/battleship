@@ -91,7 +91,7 @@ function aiMove(gameBoard){
 //searches for new boats
 function aiSearchMove(gameBoard){
     //find length of shortest unsunk ship
-    let shortestLength = gameBoard.shipList.reduce((ship, shortest) => ship.isSunk() ? shortest : Math.min(ship.length, shortest), 1000000);
+    return null;
 }
 
 //tries to sink boat thats been found but not sunk
@@ -105,11 +105,54 @@ function aiTargetMove(gameBoard, target){
     
     //find best directions
     let possibleCoordinates = findCoordinates(gameBoard, surrounding, target);
-    let horizontalDistance = possibleCoordinates.reduce((coordinate,highest)  => coordinate.row > highest ? coordinate.row : highest, 0);
-    let verticalDistance = 0; 
 
-    return possibleCoordinates[0];
+    let highestRow = possibleCoordinates.reduce((highest, coordinate)  => coordinate.row > highest ? coordinate.row : highest, target.row+1);
+    let lowestRow = possibleCoordinates.reduce((lowest, coordinate)  => coordinate.row < lowest ? coordinate.row : lowest, target.row-1);
+    let highestColumn = possibleCoordinates.reduce((highest, coordinate)  => coordinate.column > highest ? coordinate.column : highest, target.column+1);
+    let lowestColumn = possibleCoordinates.reduce((lowest, coordinate)  => coordinate.column < lowest ? coordinate.column : lowest, target.column-1);
+
+    let verticalPosDistance = openDistance(gameBoard, {row: highestRow, column: target.column}, true, 1);
+    let verticalNegDistance = openDistance(gameBoard, {row: lowestRow, column: target.column}, true, -1);
+    let horizontalPosDistance = openDistance(gameBoard, {row: target.row, column: highestColumn}, false, 1);
+    let horizontalNegDistance = openDistance(gameBoard, {row: target.row, column: lowestColumn}, false, -1);
+
+    let longest;
+    //shoot in continous unsunk ship direction
+    if (highestRow - lowestRow == highestColumn - lowestColumn){
+        longest = Math.max(verticalPosDistance, verticalNegDistance, horizontalPosDistance, horizontalNegDistance);
+        if (verticalPosDistance  == longest)
+            return possibleCoordinates.reduce((highestVertical, coordinate) => coordinate.row >= highestVertical.row ? coordinate : highestVertical, target);
+        if (verticalNegDistance == longest)
+            return possibleCoordinates.reduce((lowestVertical, coordinate) => coordinate.row <= lowestVertical.row ? coordinate : lowestVertical, target);
+        if (horizontalPosDistance  == longest)
+            return possibleCoordinates.reduce((highestHorizontal, coordinate) => coordinate.column >= highestHorizontal.row ? coordinate : highestHorizontal, target);
+        return possibleCoordinates.reduce((lowestHorizontal, coordinate) => coordinate.column <= lowestHorizontal.row ? coordinate : lowestHorizontal, target);
+    } else if (highestRow - lowestRow > highestColumn - lowestColumn){
+        longest = Math.max(verticalPosDistance, verticalNegDistance);
+        if (verticalPosDistance  == longest)
+            return possibleCoordinates.reduce((highestVertical, coordinate) => coordinate.row >= highestVertical.row ? coordinate : highestVertical, target);
+        return possibleCoordinates.reduce((lowestVertical, coordinate) => coordinate.row <= lowestVertical.row ? coordinate : lowestVertical, target);
+    } else {
+        longest = Math.max(horizontalPosDistance, horizontalNegDistance);
+        if (horizontalPosDistance  == longest)
+            return possibleCoordinates.reduce((highestHorizontal, coordinate) => coordinate.column >= highestHorizontal.row ? coordinate : highestHorizontal, target);
+        return possibleCoordinates.reduce((lowestHorizontal, coordinate) => coordinate.column <= lowestHorizontal.row ? coordinate : lowestHorizontal, target);
+    }
+
+    return {row: 0, column: 0};
 }
+
+function openDistance(gameBoard, start, vertical, step){
+    let distance = 0;
+    while (filterCoordinates(gameBoard, [start]).length > 0){
+        distance++;
+        if (vertical) start.row += step;
+        else start.column += step;
+    }
+
+    return distance;
+}
+
 //finds first possible attack locations in both x and y directions
 function findCoordinates(gameBoard, possibleCoordinates, target){
     possibleCoordinates = filterCoordinates(gameBoard, possibleCoordinates);
@@ -143,4 +186,4 @@ function filterCoordinates(gameBoard, possibleCoordinates){
 }
 
 
-export {shipFactory, gameBoardFactory, playerFactory, aiPlace, aiMove, aiSearchMove, aiTargetMove, findCoordinates, filterCoordinates}
+export {shipFactory, gameBoardFactory, playerFactory, aiPlace, aiMove, aiSearchMove, aiTargetMove, findCoordinates, filterCoordinates, openDistance}
