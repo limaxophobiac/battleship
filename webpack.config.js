@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: './src/gamelogic.js',
+  entry: './src/interface.js',
   devtool: 'inline-source-map',
   devServer: {
     static: './dist',

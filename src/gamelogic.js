@@ -194,7 +194,8 @@ function sumOpenDistance(gameBoard, start){
     let vertNeg = openDistance(gameBoard, start, true, -1);
     let horPos = openDistance(gameBoard, start, false, 1);
     let horNeg = openDistance(gameBoard, start, false, -1);
-    return vertPos + vertNeg + 2*(vertPos < vertNeg ? vertPos : vertNeg) + horPos + horNeg + 2*(horPos < horNeg ? horPos : horNeg);
+    //higher weigth to avoiding short distances is better against random placements but kills performance again edge-hugging boards
+    return vertPos + vertNeg + (vertPos < vertNeg ? vertPos : vertNeg) + horPos + horNeg + (horPos < horNeg ? horPos : horNeg);
 }
 
 function openDistance(gameBoard, start, vertical, step){
