@@ -71,6 +71,45 @@ function aiPlace(gameBoard, shipList){
     }
 }
 
+//finds boards that are harder to beat by the AI algorithm and plays them
+function aiSmartPlace(gameBoard, shipList){
+    let highestShots = 0;
+    let shipLengths = shipList.map(ship => ship.length)
+    if (shipLengths.length != shipList.length) throw new Error("im stupid somehow");
+    let bestPlacements;
+    for (let i = 0; i < 50; i++){
+        let testBoard = gameBoardFactory(gameBoard.height, gameBoard.width);
+        let currentPlacements = [];
+        let currentShots = 0;
+        for (let j = 0; j < shipLengths.length; j++){
+            let randRow = Math.floor(Math.random() * testBoard.height);
+            let randColumn = Math.floor(Math.random() * testBoard.width);
+            let isVertical = Math.random() > 0.5;
+            
+            if (testBoard.placeShip(randRow, randColumn, isVertical, shipFactory(shipLengths[j])))
+                currentPlacements.push({row: randRow, column: randColumn, isVertical: isVertical, length: shipLengths[j]});
+            else j--;
+        }
+
+
+        while (!testBoard.allSunk()){
+            aiShoot({playerName: "testAI"}, testBoard)
+            currentShots++;
+        }
+        if (currentShots > highestShots){
+            highestShots = currentShots;
+            bestPlacements = [];
+            while (currentPlacements.length > 0) bestPlacements.push(currentPlacements.pop());
+        }
+    }
+
+    for (const placement of bestPlacements){
+        if (gameBoard.placeShip(placement.row, placement.column, placement.isVertical, shipFactory(placement.length))) continue;
+        throw new Error("Trying to place ship in illegal spot.")
+    }
+
+}
+
 function aiShoot(player, gameBoard){
     let target = aiMove(gameBoard);
     //console.log("tries to shoot row:"  + target.row + "col: " + target.column)
@@ -105,7 +144,6 @@ function aiSearchMove(gameBoard){
     //find length of shortest unsunk ship
     let shortShip = gameBoard.shipList.reduce((shortest, ship) => !ship.isSunk() && ship.length < shortest ? ship.length : shortest, 1000000);
     let goodShots = [];
-    let newShot;
     for (let row = 0; row < gameBoard.height; row++){
         for (let column = 0; column < gameBoard.width; column++){
             if ((row + column) % shortShip != 0) continue;
@@ -113,9 +151,9 @@ function aiSearchMove(gameBoard){
             goodShots.push({row, column});
         }
     }
-    //filter for target value
-
+    //only half the shots
     //filter goodshots for the ones where the most open straigth distance around them
+
     goodShots.forEach(element => element.openSum = sumOpenDistance(gameBoard, element));
     let greatestOpen = goodShots.reduce((greatest, element) => element.openSum > greatest ? element.openSum : greatest, 0);
     goodShots = goodShots.filter(element => element.openSum == greatestOpen);
@@ -194,8 +232,7 @@ function sumOpenDistance(gameBoard, start){
     let vertNeg = openDistance(gameBoard, start, true, -1);
     let horPos = openDistance(gameBoard, start, false, 1);
     let horNeg = openDistance(gameBoard, start, false, -1);
-    //higher weigth to avoiding short distances is better against random placements but kills performance again edge-hugging boards
-    return vertPos + vertNeg + (vertPos < vertNeg ? vertPos : vertNeg) + horPos + horNeg + (horPos < horNeg ? horPos : horNeg);
+    return vertPos + vertNeg + horPos + horNeg;
 }
 
 function openDistance(gameBoard, start, vertical, step){
@@ -244,4 +281,16 @@ function filterCoordinates(gameBoard, possibleCoordinates){
 }
 
 
-export {shipFactory, gameBoardFactory, playerFactory, aiPlace, aiMove, aiSearchMove, aiTargetMove, findCoordinates, filterCoordinates, openDistance, aiShoot}
+export {
+    shipFactory,
+    gameBoardFactory,
+    playerFactory,
+    aiPlace, aiMove,
+    aiSearchMove,
+    aiTargetMove,
+    findCoordinates,
+    filterCoordinates,
+    openDistance,
+    aiShoot,
+    aiSmartPlace
+}

@@ -5,7 +5,8 @@ import {
     openDistance,
     aiMove,
     aiShoot,
-    aiPlace
+    aiPlace,
+    aiSmartPlace
 } from './gamelogic'
 
 
@@ -214,7 +215,7 @@ describe("board tests", () => {
                 let totalShots = 0
                 let minShots = 1000;
                 let maxShots = 0;
-                for (let i = 0; i < 10000; i++){
+                for (let i = 0; i < 50000; i++){
                     testBoard3 = gameBoardFactory(10, 10);
                     aiPlace(testBoard3, [
                         shipFactory(2),
@@ -234,14 +235,54 @@ describe("board tests", () => {
                     medians[currentShots] = medians[currentShots] + 1;
 
                 }
-                console.log("average shots to sink 5 ships: " + (totalShots/10000));
-                console.log("lowest number of shots to sink 5 ships: " + minShots);
-                console.log("greatest number of shots to sink 5 ships: " + maxShots);
+                console.log("average shots to sink 5 ships: " + (totalShots/50000));
+             //   console.log("lowest number of shots to sink 5 ships: " + minShots);
+            //    console.log("greatest number of shots to sink 5 ships: " + maxShots);
                 let medianSpot = 0;
                 while (medians.slice(0, medianSpot).reduce((sum, elem) => sum + elem, 0) < medians.slice(medianSpot, 80).reduce((sum, elem) => sum + elem, 0)){
                     medianSpot++;
                 }
                 console.log("median: " + medianSpot)
+
+
+            }).not.toThrow()
+        });
+
+        test('build and clear hard boards without crashing in reasonable time', () => {
+
+            expect(() => {
+                let medians = Array(80).fill(0)
+                let totalShots = 0
+                let minShots = 10000;
+                let maxShots = 0;
+                for (let i = 0; i < 3000; i++){
+                    testBoard3 = gameBoardFactory(10, 10);
+                    aiSmartPlace(testBoard3, [
+                        shipFactory(2),
+                        shipFactory(3),
+                        shipFactory(3),
+                        shipFactory(4),
+                        shipFactory(5)]
+                    )
+                    let currentShots = 0;
+                    while (!testBoard3.allSunk()){
+                        aiShoot({playerName: "testAI"}, testBoard3)
+                        currentShots++;
+                    }
+                    if (currentShots < minShots) minShots = currentShots;
+                    if (currentShots > maxShots) maxShots = currentShots;
+                    totalShots += currentShots;
+                    medians[currentShots] = medians[currentShots] + 1;
+
+                }
+                console.log("average shots to sink 5 ships hard board: " + (totalShots/3000));
+             //   console.log("lowest number of shots to sink 5 ships: " + minShots);
+            //    console.log("greatest number of shots to sink 5 ships: " + maxShots);
+                let medianSpot = 0;
+                while (medians.slice(0, medianSpot).reduce((sum, elem) => sum + elem, 0) < medians.slice(medianSpot, 80).reduce((sum, elem) => sum + elem, 0)){
+                    medianSpot++;
+                }
+              //  console.log("median: " + medianSpot)
 
 
             }).not.toThrow()
@@ -254,10 +295,10 @@ describe("board tests", () => {
                 let totalShots = 0
                 let minShots = 1000;
                 let maxShots = 0;
-                for (let i = 0; i < 10000; i++){
+                for (let i = 0; i < 25000; i++){
                     testBoard3 = gameBoardFactory(10, 10);
-                    testBoard3.placeShip(0 + (i%3), 0, false, shipFactory(5));
-                    testBoard3.placeShip(0 + (i%2), 9, true, shipFactory(4));
+                    testBoard3.placeShip(0 + (i%4), 0, false, shipFactory(5));
+                    testBoard3.placeShip(1 + (i%3), 9, true, shipFactory(4));
                     testBoard3.placeShip(3 + (i%2), 1, true, shipFactory(3));
                     testBoard3.placeShip(8 + (i%2), 1, false, shipFactory(3));
                     testBoard3.placeShip(9, 7 + (i%2), false, shipFactory(2));
@@ -272,14 +313,52 @@ describe("board tests", () => {
                     medians[currentShots] = medians[currentShots] + 1;
 
                 }
-                console.log("average shots to sink 5 ships: " + (totalShots/10000));
-                console.log("lowest number of shots to sink 5 ships: " + minShots);
-                console.log("greatest number of shots to sink 5 ships: " + maxShots);
+                console.log("average shots to sink 5 ships on edges: " + (totalShots/25000));
+               // console.log("lowest number of shots to sink 5 ships: " + minShots);
+              //  console.log("greatest number of shots to sink 5 ships: " + maxShots);
                 let medianSpot = 0;
                 while (medians.slice(0, medianSpot).reduce((sum, elem) => sum + elem, 0) < medians.slice(medianSpot, 80).reduce((sum, elem) => sum + elem, 0)){
                     medianSpot++;
                 }
-                console.log("median: " + medianSpot)
+               // console.log("median: " + medianSpot)
+
+
+            }).not.toThrow()
+        });
+
+        test('can clear clumped boards in reasonable time', () => {
+
+            expect(() => {
+                let medians = Array(80).fill(0)
+                let totalShots = 0
+                let minShots = 1000;
+                let maxShots = 0;
+                for (let i = 0; i < 25000; i++){
+                    testBoard3 = gameBoardFactory(10, 10);
+                    testBoard3.placeShip(0 + (i % 2), 0 + (i % 1) , false, shipFactory(5));
+                    testBoard3.placeShip(1 + (i % 2), 0 + (i % 1), false, shipFactory(4));
+                    testBoard3.placeShip(2 + (i % 2), 0 + (i % 1), false, shipFactory(3));
+                    testBoard3.placeShip(2 + (i % 2), 3 + (i % 1), false, shipFactory(3));
+                    testBoard3.placeShip(1 + (i % 2), 4 + (i % 1), false, shipFactory(2));
+                    let currentShots = 0;
+                    while (!testBoard3.allSunk()){
+                        aiShoot({playerName: "testAI"}, testBoard3)
+                        currentShots++;
+                    }
+                    if (currentShots < minShots) minShots = currentShots;
+                    if (currentShots > maxShots) maxShots = currentShots;
+                    totalShots += currentShots;
+                    medians[currentShots] = medians[currentShots] + 1;
+
+                }
+                console.log("average shots to sink 5 ships clumped: " + (totalShots/25000));
+              //  console.log("lowest number of shots to sink 5 ships: " + minShots);
+              //  console.log("greatest number of shots to sink 5 ships: " + maxShots);
+                let medianSpot = 0;
+                while (medians.slice(0, medianSpot).reduce((sum, elem) => sum + elem, 0) < medians.slice(medianSpot, 80).reduce((sum, elem) => sum + elem, 0)){
+                    medianSpot++;
+                }
+                //console.log("median: " + medianSpot)
 
 
             }).not.toThrow()
