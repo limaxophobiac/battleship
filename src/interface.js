@@ -8,6 +8,8 @@ import {
     aiSmartPlace
 } from './gamelogic'
 
+
+const placementBoard = document.getElementById("placementBoard");
 const p1BoardDisplay = document.getElementById("p1Board");
 const p2BoardDisplay = document.getElementById("p2Board");
 
@@ -92,3 +94,11 @@ async function playtest(){
         await(new Promise(res => setTimeout(res, 75))); 
     }
 }
+
+
+
+function newGameStart(){
+    let p1Board = boardFactory(placementBoard, 10, 10);
+}
+
+newGameStart();

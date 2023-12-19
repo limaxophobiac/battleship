@@ -1,4 +1,5 @@
 *{
+    font-family: Arial, Helvetica, sans-serif;
     margin: 0px;
     box-sizing: border-box;
     padding: 0px;
@@ -12,12 +13,47 @@
 #header p {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
-    font-size: 50px;
+    font-size: 3rem;
     margin: 5px;
 }
 #startGameScreen{
     display: grid;
+    grid-template-rows: 1fr 3fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 5px;
+
 }
+
+#startGameScreen p{
+    grid-column: 1 / 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+#difficultyStart{
+    padding-left: 2vw;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    font-weight: bold;
+}
+
+#difficultyStart button{
+    margin-top: 10vh;
+    padding: 5px 15px;
+    font-weight: bold;
+}
+
+#difficultySelect label{
+    display: block;
+    margin-bottom: 5px;
+}
+
 
 #playGameScreen{
     display: none;

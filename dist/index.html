@@ -15,21 +15,27 @@
 
       <p>Place your ships</p>
 
-      <div id="difficultySelect">
-        <label for="aiDifficulty">AI difficulty<select id="aiDifficulty" name="aiDifficulty">
-          <option value="EASY">EASY</option>
-          <option value="AVERAGE">AVERAGE</option>
-          <option value="HARD">HARD</option>
-        </select></label>
-      </div>
 
-      <div id="placementBoard">
+
+      <div id="placementBoard" class="gameBoard">
+        
 
       </div>
 
       <div id="shipSelect">
-        <p>Drag</p>
         <div id="length5"></div>
+      </div>
+      <div id="difficultyStart">
+        <div id="difficultySelect">
+          <label for="aiDifficulty" display="block">AI Difficulty</label>
+          <select id="aiDifficulty" name="aiDifficulty">
+            <option value="EASY">EASY</option>
+            <option value="AVERAGE">AVERAGE</option>
+            <option value="HARD">HARD</option>
+          </select>
+          
+        </div>
+        <button>Start</button>
       </div>
 
 
