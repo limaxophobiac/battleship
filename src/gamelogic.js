@@ -50,10 +50,11 @@ function gameBoardFactory(height, width){
     }
 }
 
-function playerFactory(playerName, isAi, selfBoard, otherBoard){
+function playerFactory(playerName, isAi, ai2Difficulty, selfBoard, otherBoard){
     return {
         playerName,
         isAi,
+        aiDifficulty,
         selfBoard,
         otherBoard,
         isTurn: false

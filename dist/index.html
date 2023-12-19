@@ -8,19 +8,53 @@
   </head>
   <body>
     <div id="header">
-
+      <p>Battleship</p>
     </div>
-    <div id="gameSpace">
-      <div id="p1Space" class="playerSpace">
-        
-        <div id="p1Board" class="gameBoard"></div>
+
+    <div id="startGameScreen">
+
+      <p>Place your ships</p>
+
+      <div id="difficultySelect">
+        <label for="aiDifficulty">AI difficulty<select id="aiDifficulty" name="aiDifficulty">
+          <option value="EASY">EASY</option>
+          <option value="AVERAGE">AVERAGE</option>
+          <option value="HARD">HARD</option>
+        </select></label>
+      </div>
+
+      <div id="placementBoard">
 
       </div>
-      <div id="p2Space" class="playerSpace">
 
-        <div id="p2Board" class="gameBoard"></div>
+      <div id="shipSelect">
+        <p>Drag</p>
+        <div id="length5"></div>
+      </div>
 
+
+
+    </div>
+
+    <div id="playGameScreen">
+
+      <div id="gameSpace">
+        <div id="p1Space" class="playerSpace">
+          
+          <div id="p1Board" class="gameBoard"></div>
+
+        </div>
+        <div id="p2Space" class="playerSpace">
+
+          <div id="p2Board" class="gameBoard"></div>
+
+        </div>
       </div>
     </div>
+
+    <div id="endGameScreen">
+
+    </div>
+
   </body>
 </html>

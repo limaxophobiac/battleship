@@ -12,6 +12,7 @@ const p1BoardDisplay = document.getElementById("p1Board");
 const p2BoardDisplay = document.getElementById("p2Board");
 
 
+
 function boardFactory(boardDisplay, height, width){
     let gameBoard = gameBoardFactory(height, width);
 
@@ -46,6 +47,8 @@ function boardFactory(boardDisplay, height, width){
                         } else if (this.gameBoard.board[i][j].isAttacked) this.displayGrid[i][j].style.backgroundColor = "darkgray";
                     }
                 }
+            } else {
+
             }
         },
     }
