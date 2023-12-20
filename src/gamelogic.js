@@ -76,7 +76,6 @@ function aiPlace(gameBoard, shipList){
 function aiSmartPlace(gameBoard, shipList){
     let highestShots = 0;
     let shipLengths = shipList.map(ship => ship.length)
-    if (shipLengths.length != shipList.length) throw new Error("im stupid somehow");
     let bestPlacements;
     for (let i = 0; i < 50; i++){
         let testBoard = gameBoardFactory(gameBoard.height, gameBoard.width);

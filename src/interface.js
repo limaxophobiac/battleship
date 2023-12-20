@@ -12,6 +12,7 @@ import {
 const placementBoard = document.getElementById("placementBoard");
 const p1BoardDisplay = document.getElementById("p1Board");
 const p2BoardDisplay = document.getElementById("p2Board");
+const selectSpace = document.getElementById("shipSelect");
 
 
 
@@ -98,12 +99,25 @@ async function playtest(){
 
 
 function newGameStart(){
+    selectSpace.innerHTML= "";
     let p1Board = boardFactory(placementBoard, 10, 10);
-    let hCarrier = shipFactory(5);
-    let hBattleship = shipFactory(4);
-    let hDestroyer = shipFactory(3);
-    let hSubmarine = shipFactory(3);
-    let hPatrolBoat = shipFactory(2);
+    let hCarrier = {logical: shipFactory(5), visual: document.createElement('div')};
+    let hBattleship = {logical: shipFactory(4), visual: document.createElement('div')};
+    let hDestroyer = {logical: shipFactory(3), visual: document.createElement('div')};
+    let hSubmarine = {logical: shipFactory(3), visual: document.createElement('div')};
+    let hPatrolBoat = {logical: shipFactory(2), visual: document.createElement('div')};
+    let playerShips = [
+        hCarrier,
+        hBattleship,
+        hDestroyer,
+        hSubmarine,
+        hPatrolBoat
+    ]
+    for (const ship of playerShips){
+        ship.visual.classList.add("ship");
+        selectSpace.appendChild(ship.visual);
+    }
+
 }
 
 newGameStart();
