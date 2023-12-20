@@ -13,7 +13,7 @@
 
     <div id="startGameScreen">
 
-      <p>Place your ships</p>
+     
 
 
 
@@ -27,18 +27,19 @@
       </div>
       <div id="difficultyStart">
         <div id="difficultySelect">
-          <label for="aiDifficulty" display="block">AI Difficulty</label>
-          <select id="aiDifficulty" name="aiDifficulty">
-            <option value="EASY">EASY</option>
-            <option value="AVERAGE">AVERAGE</option>
-            <option value="HARD">HARD</option>
-          </select>
+          <p display="block">Difficulty</p>
+
+          <div id="difficultyRadio">
+            <label class="radioLabel"><input type="radio" id="easySelect" name="difficulty" value="easy"> Easy</label>
+            <label class="radioLabel"><input type="radio" id="mediumSelect" name="difficulty" value="medium" checked> Medium</label>
+            <label class="radioLabel"><input type="radio" id="hardSelect" name="difficulty" value="hard"> Hard</label>
+          </div>
           
         </div>
         <button>Start</button>
       </div>
 
-
+      <p>Place your ships</p>
 
     </div>
 

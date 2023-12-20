@@ -99,6 +99,11 @@ async function playtest(){
 
 function newGameStart(){
     let p1Board = boardFactory(placementBoard, 10, 10);
+    let hCarrier = shipFactory(5);
+    let hBattleship = shipFactory(4);
+    let hDestroyer = shipFactory(3);
+    let hSubmarine = shipFactory(3);
+    let hPatrolBoat = shipFactory(2);
 }
 
 newGameStart();
