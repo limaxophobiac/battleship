@@ -25,7 +25,7 @@ body{
 #startGameScreen{
     display: grid;
     grid-template-rows: 6fr 1fr;
-    grid-template-columns: 3fr 3fr 1.5fr;
+    grid-template-columns: 3fr 3fr 2fr;
     gap: 10px;
     padding: 5px;
     height: 88vh;
@@ -41,11 +41,13 @@ body{
 }
 
 #difficultyStart{
-    padding-left: 2vw;
+    padding-left: 3vw;
+    padding-right: 1vw;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    justify-self: left;
     font-weight: bold;
     min-height: 308px;
     max-height: min(50vw, 100%);
@@ -129,14 +131,17 @@ input[type="radio"]:checked::before{
 
 
 #shipSelect{
-    display: grid;
+    display: flex;
     min-height: 308px;
+    min-width: 200px;
     max-height: min(50vw, 100%);
+    justify-content: center;
+    align-items: center;
+
 }
 .ship{
     display: grid;
     background-color: black;
-    min-height: 32px;
     border: 1px solid black;
     gap: 1px;
 }

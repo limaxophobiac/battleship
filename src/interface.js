@@ -98,6 +98,7 @@ async function playtest(){
 
 
 
+
 function newGameStart(){
     selectSpace.innerHTML= "";
     let p1Board = boardFactory(placementBoard, 10, 10);
@@ -116,7 +117,34 @@ function newGameStart(){
     for (const ship of playerShips){
         ship.visual.classList.add("ship");
         selectSpace.appendChild(ship.visual);
+        ship.visual.style.display = "none"
+        ship.visual.draggable="true";
+        ship.visual.ondragstart="drag(event)"
+        ship.visual.style.minHeight="30px"
+        ship.visual.style.height="min(5vw, 10%)"
+        ship.visual.style.aspectRatio=`${ship.logical.length}/1`;
+        ship.horizontal=true;
+        ship.visual.addEventListener("click", function(){
+            console.log("rotating")
+            if (ship.horizontal){
+                console.log("tovertical")
+                ship.horizontal=false;
+                ship.visual.style.minHeigth=`${30*ship.logical.length}px`;
+                ship.visual.style.height=`min(${5*ship.logical.length}vw, ${10*ship.logical.length}%)`;
+                ship.visual.style.aspectRatio=`1/${ship.logical.length}`;
+            } else {
+                console.log("tohorizontal");
+                ship.horizontal=true;
+                ship.visual.style.minHeight="30px"
+                ship.visual.style.height="min(5vw, 10%)"
+                ship.visual.style.aspectRatio=`${ship.logical.length}/1`;
+            }
+        })
+
     }
+
+    playerShips[0].visual.style.display="grid";
+
 
 }
 
