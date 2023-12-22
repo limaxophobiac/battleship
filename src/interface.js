@@ -9,10 +9,18 @@ import {
 } from './gamelogic'
 
 
+let allPlaced;
+let p1Board;
+let newBoard;
+
 const placementBoard = document.getElementById("placementBoard");
 const p1BoardDisplay = document.getElementById("p1Board");
 const p2BoardDisplay = document.getElementById("p2Board");
 const selectSpace = document.getElementById("shipSelect");
+const startButton = document.getElementById("startButton");
+const startScreen = document.getElementById("startGameScreen");
+const playScreen = document.getElementById("playGameScreen");
+
 
 
 
@@ -61,7 +69,7 @@ function boardFactory(boardDisplay, height, width){
 
 
 
-let p1Board = boardFactory(p1BoardDisplay, 10, 10);
+p1Board = boardFactory(p1BoardDisplay, 10, 10);
 let p2Board = boardFactory(p2BoardDisplay, 10, 10);
 
 
@@ -75,15 +83,7 @@ aiSmartPlace(p2Board.gameBoard, [
 
 p2Board.displayUpdate(true);
 
-aiSmartPlace(p1Board.gameBoard, [
-    shipFactory(5),
-    shipFactory(4),
-    shipFactory(3),
-    shipFactory(3),
-    shipFactory(2),
-])
 
-p1Board.displayUpdate(true);
 
 async function playtest(){
     await(new Promise(res => setTimeout(res, 1000))); 
@@ -102,8 +102,9 @@ async function playtest(){
 
 
 function newGameStart(){
+    allPlaced = false;
     selectSpace.innerHTML= "";
-    let p1Board = boardFactory(placementBoard, 10, 10);
+    newBoard = boardFactory(placementBoard, 10, 10);
     let hCarrier = {logical: shipFactory(5), visual: document.createElement('div')};
     let hBattleship = {logical: shipFactory(4), visual: document.createElement('div')};
     let hDestroyer = {logical: shipFactory(3), visual: document.createElement('div')};
@@ -145,55 +146,73 @@ function newGameStart(){
     }
     let currentShip = 0;
 
-    for (let i = 0; i < p1Board.height; i++){
-        for (let j = 0; j < p1Board.width; j++){
-            p1Board.displayGrid[i][j].addEventListener("mouseover", function(){
-                console.log(i + " " + j)
+    for (let i = 0; i < newBoard.height; i++){
+        for (let j = 0; j < newBoard.width; j++){
+            newBoard.displayGrid[i][j].addEventListener("mouseover", function(){
+                if (currentShip >= playerShips.length) return;
                 if (playerShips[currentShip].horizontal){
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++){
-                        if (p1Board.gameBoard.board[i][j+k].ship == null) p1Board.displayGrid[i][j+k].style.backgroundColor = "grey";
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < newBoard.width; k++){
+                        if (newBoard.gameBoard.board[i][j+k].ship == null) newBoard.displayGrid[i][j+k].style.backgroundColor = "grey";
                     }
                 } else {
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++){
-                        if (p1Board.gameBoard.board[i+k][j].ship == null) p1Board.displayGrid[i+k][j].style.backgroundColor = "grey";
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < newBoard.height; k++){
+                        if (newBoard.gameBoard.board[i+k][j].ship == null) newBoard.displayGrid[i+k][j].style.backgroundColor = "grey";
                     }
                 }
             });
 
-            p1Board.displayGrid[i][j].addEventListener("mouseleave", function(){
-                console.log(i + " " + j)
+            newBoard.displayGrid[i][j].addEventListener("mouseleave", function(){
+                if (currentShip >= playerShips.length) return;
                 if (playerShips[currentShip].horizontal){
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++){
-                        if (p1Board.gameBoard.board[i][j+k].ship == null) p1Board.displayGrid[i][j+k].style.backgroundColor = "white";
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < newBoard.width; k++){
+                        if (newBoard.gameBoard.board[i][j+k].ship == null) newBoard.displayGrid[i][j+k].style.backgroundColor = "white";
                     }
                 } else {
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++){
-                        if (p1Board.gameBoard.board[i+k][j].ship == null) p1Board.displayGrid[i+k][j].style.backgroundColor = "white";
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < newBoard.height; k++){
+                        if (newBoard.gameBoard.board[i+k][j].ship == null) newBoard.displayGrid[i+k][j].style.backgroundColor = "white";
                     }
                 }
             });
 
-            p1Board.displayGrid[i][j].addEventListener("click", function(){
+            newBoard.displayGrid[i][j].addEventListener("click", function(){
                 console.log(i + " " + j)
+                if (currentShip >= playerShips.length) return;
                 if (playerShips[currentShip].horizontal){
-                    if (!p1Board.gameBoard.placeShip(i, j, false, playerShips[currentShip].logical)) return;
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++){
-                        p1Board.displayGrid[i][j+k].style.backgroundColor = "black";
+                    if (!newBoard.gameBoard.placeShip(i, j, false, playerShips[currentShip].logical)) return;
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < newBoard.width; k++){
+                        newBoard.displayGrid[i][j+k].style.backgroundColor = "black";
                     }
                 } else {
-                    if (!p1Board.gameBoard.placeShip(i, j, true, playerShips[currentShip].logical)) return;
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++){
-                        p1Board.displayGrid[i+k][j].style.backgroundColor = "black";
+                    if (!newBoard.gameBoard.placeShip(i, j, true, playerShips[currentShip].logical)) return;
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < newBoard.height; k++){
+                        newBoard.displayGrid[i+k][j].style.backgroundColor = "black";
                     }
                 }
                 playerShips[currentShip].visual.style.display="none"
                 currentShip++;
+                if (currentShip == playerShips.length){
+                    allPlaced = true;
+                    return;
+                    
+                }
                 playerShips[currentShip].visual.style.display="grid"
             });
 
         }
 
     }
+
+    startButton.addEventListener("click", function(){
+        if (!allPlaced) return;
+
+        startScreen.style.display = "none";
+        playScreen.style.display = "grid";
+        p1Board.gameBoard = newBoard.gameBoard;
+        p1Board.displayUpdate(true);
+        console.log("starting")
+        playtest()
+
+    });
 
     playerShips[0].visual.style.display="grid";
 
