@@ -29,6 +29,8 @@ function boardFactory(boardDisplay, height, width){
             displayGrid[i][j].style.backgroundColor = 'white';
             //
             boardDisplay.appendChild(displayGrid[i][j])
+            displayGrid[i][j].row = i;
+            displayGrid[i][j].column = j;
         }
     }
 
@@ -114,32 +116,76 @@ function newGameStart(){
         hSubmarine,
         hPatrolBoat
     ]
-    for (const ship of playerShips){
-        ship.visual.classList.add("ship");
-        selectSpace.appendChild(ship.visual);
-        ship.visual.style.display = "none"
-        ship.visual.draggable="true";
-        ship.visual.ondragstart="drag(event)"
-        ship.visual.style.minHeight="30px"
-        ship.visual.style.height="min(5vw, 10%)"
-        ship.visual.style.aspectRatio=`${ship.logical.length}/1`;
-        ship.horizontal=true;
-        ship.visual.addEventListener("click", function(){
+    
+    for (let i =0; i < playerShips.length; i++){
+        playerShips[i].visual.classList.add("ship");
+        selectSpace.appendChild(playerShips[i].visual);
+        playerShips[i].visual.style.display = "none"
+        playerShips[i].visual.style.minHeight="30px"
+        playerShips[i].visual.style.height="min(5vw, 10%)"
+        playerShips[i].visual.style.aspectRatio=`${playerShips[i].logical.length}/1`;
+        playerShips[i].horizontal=true;
+        playerShips[i].visual.addEventListener("click", function(){
             console.log("rotating")
-            if (ship.horizontal){
+            if (playerShips[i].horizontal){
                 console.log("tovertical")
-                ship.horizontal=false;
-                ship.visual.style.minHeigth=`${30*ship.logical.length}px`;
-                ship.visual.style.height=`min(${5*ship.logical.length}vw, ${10*ship.logical.length}%)`;
-                ship.visual.style.aspectRatio=`1/${ship.logical.length}`;
+                playerShips[i].horizontal=false;
+                playerShips[i].visual.style.minHeigth=`${30*playerShips[i].logical.length}px`;
+                playerShips[i].visual.style.height=`min(${5*playerShips[i].logical.length}vw, ${10*playerShips[i].logical.length}%)`;
+                playerShips[i].visual.style.aspectRatio=`1/${playerShips[i].logical.length}`;
             } else {
                 console.log("tohorizontal");
-                ship.horizontal=true;
-                ship.visual.style.minHeight="30px"
-                ship.visual.style.height="min(5vw, 10%)"
-                ship.visual.style.aspectRatio=`${ship.logical.length}/1`;
+                playerShips[i].horizontal=true;
+                playerShips[i].visual.style.minHeight="30px"
+                playerShips[i].visual.style.height="min(5vw, 10%)"
+                playerShips[i].visual.style.aspectRatio=`${playerShips[i].logical.length}/1`;
             }
         })
+
+    }
+    let currentShip = 0;
+
+    for (let i = 0; i < p1Board.height; i++){
+        for (let j = 0; j < p1Board.width; j++){
+            p1Board.displayGrid[i][j].addEventListener("mouseover", function(){
+                console.log(i + " " + j)
+                if (playerShips[currentShip].horizontal){
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++)
+                        p1Board.displayGrid[i][j+k].style.backgroundColor = "grey";
+                } else {
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++)
+                        p1Board.displayGrid[i+k][j].style.backgroundColor = "grey";
+                }
+            });
+
+            p1Board.displayGrid[i][j].addEventListener("mouseleave", function(){
+                console.log(i + " " + j)
+                if (playerShips[currentShip].horizontal){
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++)
+                        p1Board.displayGrid[i][j+k].style.backgroundColor = "white";
+                } else {
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++)
+                        p1Board.displayGrid[i+k][j].style.backgroundColor = "white";
+                }
+            });
+
+            p1Board.displayGrid[i][j].addEventListener("click", function(){
+                console.log(i + " " + j)
+                if (playerShips[currentShip].horizontal){
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++){
+                        p1Board.displayGrid[i][j+k].style.backgroundColor = "black";
+                    }
+                } else {
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++){
+                        p1Board.displayGrid[i+k][j].style.backgroundColor = "black";
+                    }
+                }
+                playerShips[currentShip].visual.style.display="none"
+                currentShip++;
+                playerShips[currentShip].visual.style.display="grid"
+            });
+
+        }
 
     }
 
