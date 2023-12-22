@@ -150,32 +150,38 @@ function newGameStart(){
             p1Board.displayGrid[i][j].addEventListener("mouseover", function(){
                 console.log(i + " " + j)
                 if (playerShips[currentShip].horizontal){
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++)
-                        p1Board.displayGrid[i][j+k].style.backgroundColor = "grey";
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++){
+                        if (p1Board.gameBoard.board[i][j+k].ship == null) p1Board.displayGrid[i][j+k].style.backgroundColor = "grey";
+                    }
                 } else {
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++)
-                        p1Board.displayGrid[i+k][j].style.backgroundColor = "grey";
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++){
+                        if (p1Board.gameBoard.board[i+k][j].ship == null) p1Board.displayGrid[i+k][j].style.backgroundColor = "grey";
+                    }
                 }
             });
 
             p1Board.displayGrid[i][j].addEventListener("mouseleave", function(){
                 console.log(i + " " + j)
                 if (playerShips[currentShip].horizontal){
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++)
-                        p1Board.displayGrid[i][j+k].style.backgroundColor = "white";
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++){
+                        if (p1Board.gameBoard.board[i][j+k].ship == null) p1Board.displayGrid[i][j+k].style.backgroundColor = "white";
+                    }
                 } else {
-                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++)
-                        p1Board.displayGrid[i+k][j].style.backgroundColor = "white";
+                    for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++){
+                        if (p1Board.gameBoard.board[i+k][j].ship == null) p1Board.displayGrid[i+k][j].style.backgroundColor = "white";
+                    }
                 }
             });
 
             p1Board.displayGrid[i][j].addEventListener("click", function(){
                 console.log(i + " " + j)
                 if (playerShips[currentShip].horizontal){
+                    if (!p1Board.gameBoard.placeShip(i, j, false, playerShips[currentShip].logical)) return;
                     for (let k = 0; k < playerShips[currentShip].logical.length && k + j < p1Board.width; k++){
                         p1Board.displayGrid[i][j+k].style.backgroundColor = "black";
                     }
                 } else {
+                    if (!p1Board.gameBoard.placeShip(i, j, true, playerShips[currentShip].logical)) return;
                     for (let k = 0; k < playerShips[currentShip].logical.length && k + i < p1Board.height; k++){
                         p1Board.displayGrid[i+k][j].style.backgroundColor = "black";
                     }
