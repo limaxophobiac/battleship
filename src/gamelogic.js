@@ -50,7 +50,7 @@ function gameBoardFactory(height, width){
     }
 }
 
-function playerFactory(playerName, isAi, ai2Difficulty, selfBoard, otherBoard){
+function playerFactory(playerName, isAi, aiDifficulty, selfBoard, otherBoard){
     return {
         playerName,
         isAi,
@@ -77,7 +77,7 @@ function aiSmartPlace(gameBoard, shipList){
     let highestShots = 0;
     let shipLengths = shipList.map(ship => ship.length)
     let bestPlacements;
-    for (let i = 0; i < 50; i++){
+    for (let i = 0; i < 100; i++){
         let testBoard = gameBoardFactory(gameBoard.height, gameBoard.width);
         let currentPlacements = [];
         let currentShots = 0;

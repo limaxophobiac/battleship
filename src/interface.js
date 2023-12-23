@@ -5,7 +5,8 @@ import {
     gameBoardFactory,
     aiShoot,
     aiPlace,
-    aiSmartPlace
+    aiSmartPlace,
+    playerFactory
 } from './gamelogic'
 
 
@@ -49,39 +50,24 @@ function boardFactory(boardDisplay, height, width){
         height,
         width,
         displayUpdate(showShips){
-            if (showShips == true){
                 for (let i = 0; i < this.height; i++){
                     for (let j = 0; j < this.width; j++){
                         if (this.gameBoard.board[i][j].ship != null){
                             if (this.gameBoard.board[i][j].isAttacked && this.gameBoard.board[i][j].ship.isSunk())
                             this.displayGrid[i][j].style.backgroundColor = "red";
                             else if (this.gameBoard.board[i][j].isAttacked) this.displayGrid[i][j].style.backgroundColor = "orange";
-                            else this.displayGrid[i][j].style.backgroundColor = "black";
+                            else if (showShips) this.displayGrid[i][j].style.backgroundColor = "black";
                         } else if (this.gameBoard.board[i][j].isAttacked) this.displayGrid[i][j].style.backgroundColor = "darkgray";
                     }
                 }
-            } else {
-
-            }
         },
     }
 }
 
 
 
-p1Board = boardFactory(p1BoardDisplay, 10, 10);
-let p2Board = boardFactory(p2BoardDisplay, 10, 10);
 
 
-aiSmartPlace(p2Board.gameBoard, [
-    shipFactory(5),
-    shipFactory(4),
-    shipFactory(3),
-    shipFactory(3),
-    shipFactory(2),
-])
-
-p2Board.displayUpdate(true);
 
 
 
@@ -93,7 +79,7 @@ async function playtest(){
         await(new Promise(res => setTimeout(res, 75)));
         if (p1Board.gameBoard.allSunk()) break;
         aiShoot({playerName: "test"}, p2Board.gameBoard)
-        p2Board.displayUpdate(true);
+        p2Board.displayUpdate(false);
         await(new Promise(res => setTimeout(res, 75))); 
     }
 }
@@ -101,7 +87,7 @@ async function playtest(){
 
 
 
-function newGameStart(){
+function newGameSetup(){
     allPlaced = false;
     selectSpace.innerHTML= "";
     newBoard = boardFactory(placementBoard, 10, 10);
@@ -207,11 +193,25 @@ function newGameStart(){
 
         startScreen.style.display = "none";
         playScreen.style.display = "grid";
+        p1Board = boardFactory(p1BoardDisplay, 10, 10);
         p1Board.gameBoard = newBoard.gameBoard;
         p1Board.displayUpdate(true);
-        console.log("starting")
-        playtest()
 
+        let p2Board = boardFactory(p2BoardDisplay, 10, 10);
+
+        aiSmartPlace(p2Board.gameBoard, [
+            shipFactory(5),
+            shipFactory(4),
+            shipFactory(3),
+            shipFactory(3),
+            shipFactory(2),
+        ]);
+        p2Board.displayUpdate(true);
+
+        console.log("starting");
+        let player1 = playerFactory("Human", false, null, p1Board.gameBoard, p2Board);
+        let player2 = playerFactory("Computer", true, 2, p2Board.gameBoard, p1Board);
+        playGame(player1, player2)
     });
 
     playerShips[0].visual.style.display="grid";
@@ -219,4 +219,14 @@ function newGameStart(){
 
 }
 
-newGameStart();
+function playGame(player1, player2){
+
+
+    function playRound(player, selfBoard, enemyBoard){
+            if (player.isAi){
+
+            }
+    }
+}
+
+newGameSetup();
