@@ -11,7 +11,6 @@ import {
 
 
 let allPlaced;
-let p1Board;
 let newBoard;
 
 const placementBoard = document.getElementById("placementBoard");
@@ -26,6 +25,7 @@ const playScreen = document.getElementById("playGameScreen");
 
 
 function boardFactory(boardDisplay, height, width){
+    boardDisplay.innerHTML = "";
     let gameBoard = gameBoardFactory(height, width);
 
     let displayGrid = [...Array(height)].map(row => Array(width).fill(false).map(elem =>  null));
@@ -71,26 +71,30 @@ function boardFactory(boardDisplay, height, width){
 
 
 
-async function playtest(){
-    await(new Promise(res => setTimeout(res, 1000))); 
+function playtest(p1Board, p2Board){
     while (!p2Board.gameBoard.allSunk()){
         aiShoot({playerName: "test"}, p1Board.gameBoard)
         p1Board.displayUpdate(true);
-        await(new Promise(res => setTimeout(res, 75)));
-        if (p1Board.gameBoard.allSunk()) break;
+        if (p1Board.gameBoard.allSunk()){
+            console.log("p2 won")
+            return;
+        }
         aiShoot({playerName: "test"}, p2Board.gameBoard)
         p2Board.displayUpdate(false);
-        await(new Promise(res => setTimeout(res, 75))); 
     }
+    console.log("p1 won)");
 }
 
 
 
 
 function newGameSetup(){
+    startScreen.style.display = "grid";
+    playScreen.style.display = "none";
     allPlaced = false;
     selectSpace.innerHTML= "";
     newBoard = boardFactory(placementBoard, 10, 10);
+    newBoard.displayUpdate(true);
     let hCarrier = {logical: shipFactory(5), visual: document.createElement('div')};
     let hBattleship = {logical: shipFactory(4), visual: document.createElement('div')};
     let hDestroyer = {logical: shipFactory(3), visual: document.createElement('div')};
@@ -191,41 +195,55 @@ function newGameSetup(){
     startButton.addEventListener("click", function(){
         if (!allPlaced) return;
 
-        startScreen.style.display = "none";
-        playScreen.style.display = "grid";
-        p1Board = boardFactory(p1BoardDisplay, 10, 10);
-        p1Board.gameBoard = newBoard.gameBoard;
-        p1Board.displayUpdate(true);
-
-        let p2Board = boardFactory(p2BoardDisplay, 10, 10);
-
-        aiSmartPlace(p2Board.gameBoard, [
-            shipFactory(5),
-            shipFactory(4),
-            shipFactory(3),
-            shipFactory(3),
-            shipFactory(2),
-        ]);
-        p2Board.displayUpdate(true);
-
+        let computerBoard = gameBoardFactory(10, 10);
+        let player1 = playerFactory("Human", false, null, newBoard.gameBoard, computerBoard);
+        let player2 = playerFactory("Computer", true, 2, computerBoard, newBoard.gameBoard);
         console.log("starting");
-        let player1 = playerFactory("Human", false, null, p1Board.gameBoard, p2Board);
-        let player2 = playerFactory("Computer", true, 2, p2Board.gameBoard, p1Board);
-        playGame(player1, player2)
+        playGame([player1, player2]);
     });
 
     playerShips[0].visual.style.display="grid";
 
 
+
 }
 
-function playGame(player1, player2){
+function playGame(players){
+    p1BoardDisplay.innerHTML = "";
+    p1BoardDisplay.innerHTML = "";
+    let boards = [boardFactory(p1BoardDisplay, 10, 10), boardFactory(p2BoardDisplay, 10, 10)];
+    startScreen.style.display = "none";
+    playScreen.style.display = "grid";
+
+    for (let i = 0; i < 2; i++){
+        boards[i].gameBoard = players[i].selfBoard
+        if (players[i].isAi){
+            aiSmartPlace(players[i].selfBoard, [
+                shipFactory(5),
+                shipFactory(4),
+                shipFactory(3),
+                shipFactory(3),
+                shipFactory(2),
+            ]);
+            
+            boards[i].displayUpdate(true);
+        } else boards[i].displayUpdate(true);
+    }
+
+    let turn = 0;
 
 
     function playRound(player, selfBoard, enemyBoard){
             if (player.isAi){
 
             }
+    }
+
+    function checkWin(gameboards){
+        for (let i = 0; i < 2; i++){
+            if (gameboards[i].allSunk()) return i+1;
+        }
+        return -1;
     }
 }
 
