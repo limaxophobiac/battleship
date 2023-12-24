@@ -233,7 +233,7 @@ function gameFactory(players){
                 shipFactory(2),
             ]);
             
-            boards[i].displayUpdate(true);
+            boards[i].displayUpdate(false);
         } else {
             for (let row = 0; row < boards[i].height; row++){
                 for (let col = 0; col < boards[i].width; col++)
@@ -266,7 +266,8 @@ function gameFactory(players){
     }
 
     function endRound(playerNr){
-        boards[((playerNr+1)%2)].displayUpdate(true);
+        if (players[playerNr].isAi)boards[((playerNr+1)%2)].displayUpdate(true);
+        else boards[((playerNr+1)%2)].displayUpdate(false);
 
         if (boards[((playerNr+1)%2)].gameBoard.allSunk()){
             console.log(players[playerNr].playerName + " won on round " + currentRound);
