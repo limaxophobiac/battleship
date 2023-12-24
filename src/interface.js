@@ -21,6 +21,8 @@ const startButton = document.getElementById("startButton");
 const startScreen = document.getElementById("startGameScreen");
 const playScreen = document.getElementById("playGameScreen");
 
+let currentGame = null;
+
 
 
 
@@ -199,7 +201,8 @@ function newGameSetup(){
         let player1 = playerFactory("Human", false, null, newBoard.gameBoard, computerBoard);
         let player2 = playerFactory("Computer", true, 2, computerBoard, newBoard.gameBoard);
         console.log("starting");
-        playGame([player1, player2]);
+        currentGame = gameFactory([player1, player2]);
+        currentGame.playRound(0);
     });
 
     playerShips[0].visual.style.display="grid";
@@ -208,9 +211,13 @@ function newGameSetup(){
 
 }
 
-function playGame(players){
+function gameFactory(players){
+    let activePlayer = -1;
+    let currentRound = 0;
+    
+
     p1BoardDisplay.innerHTML = "";
-    p1BoardDisplay.innerHTML = "";
+    p2BoardDisplay.innerHTML = "";
     let boards = [boardFactory(p1BoardDisplay, 10, 10), boardFactory(p2BoardDisplay, 10, 10)];
     startScreen.style.display = "none";
     playScreen.style.display = "grid";
@@ -227,23 +234,48 @@ function playGame(players){
             ]);
             
             boards[i].displayUpdate(true);
-        } else boards[i].displayUpdate(true);
-    }
-
-    let turn = 0;
-
-
-    function playRound(player, selfBoard, enemyBoard){
-            if (player.isAi){
-
+        } else {
+            for (let row = 0; row < boards[i].height; row++){
+                for (let col = 0; col < boards[i].width; col++)
+                    boards[((i+1)%2)].displayGrid[row][col].addEventListener("click", function (){
+                        console.log(row + " " + col + " shooting");
+                        if (activePlayer != i) return;
+                        if (boards[((i+1)%2)].gameBoard.board[row][col].isAttacked) return;
+                        activePlayer = (activePlayer + 1)%2;
+                        boards[((i+1)%2)].gameBoard.recieveAttack(row, col)
+                        endRound(i);
+                    });
             }
+            boards[i].displayUpdate(true)
+        };
     }
 
-    function checkWin(gameboards){
-        for (let i = 0; i < 2; i++){
-            if (gameboards[i].allSunk()) return i+1;
+    
+
+    function playRound(playerNr){
+        if (players[playerNr].isAi){
+            console.log("AI Round:" + currentRound);
+            aiShoot(players[playerNr], players[playerNr].otherBoard);
+            currentRound++;
+            
+            endRound(playerNr);
+        } else{
+            console.log("Human Round:" + currentRound);
+            activePlayer = playerNr;
         }
-        return -1;
+    }
+
+    function endRound(playerNr){
+        boards[((playerNr+1)%2)].displayUpdate(true);
+
+        if (boards[((playerNr+1)%2)].gameBoard.allSunk()){
+            console.log(players[playerNr].playerName + " won on round " + currentRound);
+            return;
+        }
+        playRound((playerNr + 1)%2);
+    }
+    return {
+        playRound
     }
 }
 
