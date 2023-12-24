@@ -72,6 +72,8 @@ function aiPlace(gameBoard, shipList){
     }
 }
 
+
+
 //finds boards that are harder to beat by the AI algorithm and plays them
 function aiSmartPlace(gameBoard, shipList){
     let highestShots = 0;
@@ -93,7 +95,7 @@ function aiSmartPlace(gameBoard, shipList){
 
 
         while (!testBoard.allSunk()){
-            aiShoot({playerName: "testAI"}, testBoard)
+            aiShoot({playerName: "testAI", aiDifficulty: 2}, testBoard)
             currentShots++;
         }
         if (currentShots > highestShots){
@@ -111,13 +113,28 @@ function aiSmartPlace(gameBoard, shipList){
 }
 
 function aiShoot(player, gameBoard){
-    let target = aiMove(gameBoard);
+    let target;
+    if ((player.aiDifficulty == 0 && Math.random() < 0.4) || (player.aiDifficulty == 1 && Math.random() < 0.2)) target = dumbMove(gameBoard);
+    else target = aiMove(gameBoard);
     //console.log("tries to shoot row:"  + target.row + "col: " + target.column)
     if (gameBoard.recieveAttack(target.row, target.column)){
         //console.log("its a hit");
     };
     if (target.row == undefined) throw new Error(player.playerName + " didn't find a target");
     return true;
+}
+
+function dumbMove(gameBoard){
+    if (gameBoard.allSunk()) throw new Error("Can't find move when all ships sunk");
+    let targetList = [];
+    for (let i = 0; i < gameBoard.height; i++){
+        for (let j = 0; j < gameBoard.width; j++){
+            if (!gameBoard.board[i][j].isAttacked)
+                targetList.push({row: i, column: j});
+        }
+    }
+    return targetList[Math.floor(Math.random()*targetList.length)];
+
 }
 
 //Only uses information on where hits/misses have been scored and which ships are sunk

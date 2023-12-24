@@ -165,22 +165,22 @@ describe("board tests", () => {
 
         test('can shoot on fresh board', () => {
             expect(() => {
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
-                aiShoot({playerName: "test"}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
+                aiShoot({playerName: "test", aiDifficulty: 2}, testBoard2);
 
             }).not.toThrow()
         });
@@ -215,7 +215,7 @@ describe("board tests", () => {
                 let totalShots = 0
                 let minShots = 1000;
                 let maxShots = 0;
-                for (let i = 0; i < 50000; i++){
+                for (let i = 0; i < 10000; i++){
                     testBoard3 = gameBoardFactory(10, 10);
                     aiPlace(testBoard3, [
                         shipFactory(2),
@@ -226,7 +226,7 @@ describe("board tests", () => {
                     )
                     let currentShots = 0;
                     while (!testBoard3.allSunk()){
-                        aiShoot({playerName: "testAI"}, testBoard3)
+                        aiShoot({playerName: "testAI", aiDifficulty: 2}, testBoard3)
                         currentShots++;
                     }
                     if (currentShots < minShots) minShots = currentShots;
@@ -235,7 +235,7 @@ describe("board tests", () => {
                     medians[currentShots] = medians[currentShots] + 1;
 
                 }
-                console.log("average shots to sink 5 ships: " + (totalShots/50000));
+                console.log("average shots to sink 5 ships: " + (totalShots/10000));
              //   console.log("lowest number of shots to sink 5 ships: " + minShots);
             //    console.log("greatest number of shots to sink 5 ships: " + maxShots);
                 let medianSpot = 0;
@@ -255,7 +255,7 @@ describe("board tests", () => {
                 let totalShots = 0
                 let minShots = 10000;
                 let maxShots = 0;
-                for (let i = 0; i < 3000; i++){
+                for (let i = 0; i < 200; i++){
                     testBoard3 = gameBoardFactory(10, 10);
                     aiSmartPlace(testBoard3, [
                         shipFactory(2),
@@ -266,7 +266,7 @@ describe("board tests", () => {
                     )
                     let currentShots = 0;
                     while (!testBoard3.allSunk()){
-                        aiShoot({playerName: "testAI"}, testBoard3)
+                        aiShoot({playerName: "testAI", aiDifficulty: 2}, testBoard3)
                         currentShots++;
                     }
                     if (currentShots < minShots) minShots = currentShots;
@@ -275,7 +275,7 @@ describe("board tests", () => {
                     medians[currentShots] = medians[currentShots] + 1;
 
                 }
-                console.log("average shots to sink 5 ships hard board: " + (totalShots/3000));
+                console.log("average shots to sink 5 ships hard board: " + (totalShots/200));
              //   console.log("lowest number of shots to sink 5 ships: " + minShots);
             //    console.log("greatest number of shots to sink 5 ships: " + maxShots);
                 let medianSpot = 0;
@@ -295,7 +295,7 @@ describe("board tests", () => {
                 let totalShots = 0
                 let minShots = 1000;
                 let maxShots = 0;
-                for (let i = 0; i < 25000; i++){
+                for (let i = 0; i < 10000; i++){
                     testBoard3 = gameBoardFactory(10, 10);
                     testBoard3.placeShip(0 + (i%4), 0, false, shipFactory(5));
                     testBoard3.placeShip(1 + (i%3), 9, true, shipFactory(4));
@@ -304,7 +304,7 @@ describe("board tests", () => {
                     testBoard3.placeShip(9, 7 + (i%2), false, shipFactory(2));
                     let currentShots = 0;
                     while (!testBoard3.allSunk()){
-                        aiShoot({playerName: "testAI"}, testBoard3)
+                        aiShoot({playerName: "testAI", aiDifficulty: 2}, testBoard3)
                         currentShots++;
                     }
                     if (currentShots < minShots) minShots = currentShots;
@@ -313,7 +313,7 @@ describe("board tests", () => {
                     medians[currentShots] = medians[currentShots] + 1;
 
                 }
-                console.log("average shots to sink 5 ships on edges: " + (totalShots/25000));
+                console.log("average shots to sink 5 ships on edges: " + (totalShots/10000));
                // console.log("lowest number of shots to sink 5 ships: " + minShots);
               //  console.log("greatest number of shots to sink 5 ships: " + maxShots);
                 let medianSpot = 0;
@@ -333,7 +333,7 @@ describe("board tests", () => {
                 let totalShots = 0
                 let minShots = 1000;
                 let maxShots = 0;
-                for (let i = 0; i < 25000; i++){
+                for (let i = 0; i < 10000; i++){
                     testBoard3 = gameBoardFactory(10, 10);
                     testBoard3.placeShip(0 + (i % 2), 0 + (i % 1) , false, shipFactory(5));
                     testBoard3.placeShip(1 + (i % 2), 0 + (i % 1), false, shipFactory(4));
@@ -342,7 +342,7 @@ describe("board tests", () => {
                     testBoard3.placeShip(1 + (i % 2), 4 + (i % 1), false, shipFactory(2));
                     let currentShots = 0;
                     while (!testBoard3.allSunk()){
-                        aiShoot({playerName: "testAI"}, testBoard3)
+                        aiShoot({playerName: "testAI", aiDifficulty: 2}, testBoard3)
                         currentShots++;
                     }
                     if (currentShots < minShots) minShots = currentShots;
@@ -351,7 +351,7 @@ describe("board tests", () => {
                     medians[currentShots] = medians[currentShots] + 1;
 
                 }
-                console.log("average shots to sink 5 ships clumped: " + (totalShots/25000));
+                console.log("average shots to sink 5 ships clumped: " + (totalShots/10000));
               //  console.log("lowest number of shots to sink 5 ships: " + minShots);
               //  console.log("greatest number of shots to sink 5 ships: " + maxShots);
                 let medianSpot = 0;

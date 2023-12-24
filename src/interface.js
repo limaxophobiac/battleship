@@ -4,7 +4,6 @@ import {
     shipFactory,
     gameBoardFactory,
     aiShoot,
-    aiPlace,
     aiSmartPlace,
     playerFactory
 } from './gamelogic'
@@ -75,13 +74,13 @@ function boardFactory(boardDisplay, height, width){
 
 function playtest(p1Board, p2Board){
     while (!p2Board.gameBoard.allSunk()){
-        aiShoot({playerName: "test"}, p1Board.gameBoard)
+        aiShoot({playerName: "test", aiDifficulty: 2}, p1Board.gameBoard)
         p1Board.displayUpdate(true);
         if (p1Board.gameBoard.allSunk()){
             console.log("p2 won")
             return;
         }
-        aiShoot({playerName: "test"}, p2Board.gameBoard)
+        aiShoot({playerName: "test", aiDifficulty: 2}, p2Board.gameBoard)
         p2Board.displayUpdate(false);
     }
     console.log("p1 won)");
@@ -196,10 +195,11 @@ function newGameSetup(){
 
     startButton.addEventListener("click", function(){
         if (!allPlaced) return;
+        let difficulty = document.querySelector('input[name="difficulty"]:checked').value
 
         let computerBoard = gameBoardFactory(10, 10);
         let player1 = playerFactory("Human", false, null, newBoard.gameBoard, computerBoard);
-        let player2 = playerFactory("Computer", true, 2, computerBoard, newBoard.gameBoard);
+        let player2 = playerFactory("Computer", true, difficulty, computerBoard, newBoard.gameBoard);
         console.log("starting");
         currentGame = gameFactory([player1, player2]);
         currentGame.playRound(0);
@@ -214,7 +214,6 @@ function newGameSetup(){
 function gameFactory(players){
     let activePlayer = -1;
     let currentRound = 0;
-    
 
     p1BoardDisplay.innerHTML = "";
     p2BoardDisplay.innerHTML = "";
@@ -271,9 +270,14 @@ function gameFactory(players){
 
         if (boards[((playerNr+1)%2)].gameBoard.allSunk()){
             console.log(players[playerNr].playerName + " won on round " + currentRound);
+            endGame();
             return;
         }
         playRound((playerNr + 1)%2);
+    }
+
+    function endGame(){
+        
     }
     return {
         playRound
