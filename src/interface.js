@@ -74,13 +74,13 @@ function boardFactory(boardDisplay, height, width){
 
 function playtest(p1Board, p2Board){
     while (!p2Board.gameBoard.allSunk()){
-        aiShoot({playerName: "test", aiDifficulty: 2}, p1Board.gameBoard)
+        aiShoot({playerName: "test", aiDifficulty: 1}, p1Board.gameBoard)
         p1Board.displayUpdate(true);
         if (p1Board.gameBoard.allSunk()){
             console.log("p2 won")
             return;
         }
-        aiShoot({playerName: "test", aiDifficulty: 2}, p2Board.gameBoard)
+        aiShoot({playerName: "test", aiDifficulty: 1}, p2Board.gameBoard)
         p2Board.displayUpdate(false);
     }
     console.log("p1 won)");
@@ -277,7 +277,7 @@ function gameFactory(players){
     }
 
     function endGame(){
-        
+
     }
     return {
         playRound

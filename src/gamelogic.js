@@ -114,7 +114,8 @@ function aiSmartPlace(gameBoard, shipList){
 
 function aiShoot(player, gameBoard){
     let target;
-    if ((player.aiDifficulty == 0 && Math.random() < 0.4) || (player.aiDifficulty == 1 && Math.random() < 0.2)) target = dumbMove(gameBoard);
+    if (player.aiDifficulty == 0 && Math.random() < 0.25) target = dumbMove(gameBoard);
+    if (player.aiDifficulty == 2 && Math.random() < 0.06667) target = cheatMove(gameBoard);
     else target = aiMove(gameBoard);
     //console.log("tries to shoot row:"  + target.row + "col: " + target.column)
     if (gameBoard.recieveAttack(target.row, target.column)){
@@ -135,6 +136,25 @@ function dumbMove(gameBoard){
     }
     return targetList[Math.floor(Math.random()*targetList.length)];
 
+}
+
+function cheatMove(gameBoard){
+    if (gameBoard.allSunk()) throw new Error("Can't find move when all ships sunk");
+    let targetList = [];
+    for (let i = 0; i < gameBoard.height; i++){
+        for (let j = 0; j < gameBoard.width; j++){
+            if (gameBoard.board[i][j].ship != null && !gameBoard.board[i][j].isAttacked)
+                targetList.push({row: i, column: j});
+        }
+    }
+    for (const target of targetList)
+        if (
+            (target.row > 0 && gameBoard.board[target.row-1][target.column].isAttacked && gameBoard.board[target.row-1][target.column].ship == gameBoard.board[target.row][target.column].ship) ||
+            (target.row < 9 && gameBoard.board[target.row+1][target.column].isAttacked && gameBoard.board[target.row+1][target.column].ship == gameBoard.board[target.row][target.column].ship) ||
+            (target.column > 0 && gameBoard.board[target.row][target.column-1].isAttacked && gameBoard.board[target.row][target.column-1].ship == gameBoard.board[target.row][target.column].ship) ||
+            (target.column < 9 && gameBoard.board[target.row][target.column+1].isAttacked && gameBoard.board[target.row][target.column+1].ship == gameBoard.board[target.row][target.column].ship)
+        ) return target;
+    return targetList[Math.floor(Math.random()*targetList.length)];
 }
 
 //Only uses information on where hits/misses have been scored and which ships are sunk

@@ -157,11 +157,12 @@ describe("board tests", () => {
         let testShip22 = shipFactory(2);
         let testShip24 = shipFactory(4);
         let testShip25 = shipFactory(5);
+        let testShip26 = shipFactory(5);
 
         testBoard2.placeShip(0, 0, false, testShip22)
         testBoard2.placeShip(2, 4, true, testShip24)
         testBoard2.placeShip(8, 5, false, testShip25)
-        testBoard2.placeShip(9, 0, true, testShip25)
+        testBoard2.placeShip(9, 0, true, testShip26)
 
         test('can shoot on fresh board', () => {
             expect(() => {
