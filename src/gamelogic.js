@@ -95,7 +95,7 @@ function aiSmartPlace(gameBoard, shipList){
 
 
         while (!testBoard.allSunk()){
-            aiShoot({playerName: "testAI", aiDifficulty: 2}, testBoard)
+            aiShoot({playerName: "testAI", aiDifficulty: 1}, testBoard)
             currentShots++;
         }
         if (currentShots > highestShots){
@@ -114,8 +114,8 @@ function aiSmartPlace(gameBoard, shipList){
 
 function aiShoot(player, gameBoard){
     let target;
-    if (player.aiDifficulty == 0 && Math.random() < 0.25) target = dumbMove(gameBoard);
-    if (player.aiDifficulty == 2 && Math.random() < 0.06667) target = cheatMove(gameBoard);
+    if (player.aiDifficulty == 0 && Math.random() < 0.4) target = dumbMove(gameBoard);
+    else if (player.aiDifficulty == 2 && Math.random() < 0.06667) target = cheatMove(gameBoard);
     else target = aiMove(gameBoard);
     //console.log("tries to shoot row:"  + target.row + "col: " + target.column)
     if (gameBoard.recieveAttack(target.row, target.column)){
@@ -126,6 +126,7 @@ function aiShoot(player, gameBoard){
 }
 
 function dumbMove(gameBoard){
+    //console.log("making random move");
     if (gameBoard.allSunk()) throw new Error("Can't find move when all ships sunk");
     let targetList = [];
     for (let i = 0; i < gameBoard.height; i++){
@@ -139,6 +140,7 @@ function dumbMove(gameBoard){
 }
 
 function cheatMove(gameBoard){
+    //console.log("cheating")
     if (gameBoard.allSunk()) throw new Error("Can't find move when all ships sunk");
     let targetList = [];
     for (let i = 0; i < gameBoard.height; i++){

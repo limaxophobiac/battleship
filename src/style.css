@@ -14,6 +14,7 @@ body{
     display: flex;
     justify-content: center;
     height: 12vh;
+    min-height: 3.5rem;
 }
 
 #header p {
@@ -25,7 +26,7 @@ body{
 #startGameScreen{
     display: grid;
     grid-template-rows: 6fr 1fr;
-    grid-template-columns: 3fr 3fr 2fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
     padding: 5px;
     height: 88vh;
@@ -57,10 +58,16 @@ body{
     font-size: 1.2rm;
 }
 
-#difficultyStart button{
-    margin-top: min(10vh, 10vw);
+button {
     padding: 5px 45px;
     font-weight: bold;
+}
+#playGameScreen{
+    height: 88vh;
+    padding-bottom: 10px;
+}
+#difficultyStart button{
+    margin-top: min(10vh, 10vw);
 }
 
 #difficultySelect p{
@@ -103,30 +110,33 @@ input[type="radio"]:checked::before{
 
 }
 
-#playGameScreen{
-    display: none;
-}
-
-#endGameScreen{
-    display: none;
-}
-
 #gameSpace{
     display: flex;
     min-width: 640px;
+    max-height: 88vh;
+
+
 }
 
 .playerSpace{
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .gameBoard {
+    flex: 1;
     aspect-ratio: 1/1;
     min-height: 308px;
-    max-height: min(50vw, 100%);
+    max-height: min(40vw, 100%);
     background-color: black;
     border: 4px solid black;
     display: grid;
     gap: 1px;
+}
+
+#p1Space{
+    justify-self: end;
 }
 
 
@@ -144,4 +154,24 @@ input[type="radio"]:checked::before{
     background-color: black;
     border: 1px solid black;
     gap: 1px;
+}
+
+#endGameScreen{
+    height: 88vh;
+    grid-template-columns: 1f;
+    grid-template-rows: 1f 1f;
+    align-items: center;
+    justify-items: center;
+}
+
+#endMessage{
+    grid-row: 1/2;
+    max-width: 50;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+#newGame{
+    grid-row: 2/3;
+    align-self: start;
 }

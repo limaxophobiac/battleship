@@ -17,6 +17,7 @@
 
 
       <div id="shipSelect">
+        
 
       </div>
       <div id="placementBoard" class="gameBoard">
@@ -39,7 +40,7 @@
         <button id="startButton">Start</button>
       </div>
 
-      <p>Place your ships</p>
+      <p>Place ships (click to rotate)</p>
 
     </div>
 
@@ -47,11 +48,13 @@
 
       <div id="gameSpace">
         <div id="p1Space" class="playerSpace">
+          <p>PlayerBoard</p>
           
           <div id="p1Board" class="gameBoard"></div>
 
         </div>
         <div id="p2Space" class="playerSpace">
+          <p>ComputerBoard</p>
 
           <div id="p2Board" class="gameBoard"></div>
 
@@ -60,7 +63,8 @@
     </div>
 
     <div id="endGameScreen">
-
+      <div id="endMessage"></div>
+      <button id="newGame">New Game</button>
     </div>
 
   </body>

@@ -18,7 +18,9 @@ const p2BoardDisplay = document.getElementById("p2Board");
 const selectSpace = document.getElementById("shipSelect");
 const startButton = document.getElementById("startButton");
 const startScreen = document.getElementById("startGameScreen");
+const endScreen = document.getElementById("endGameScreen");
 const playScreen = document.getElementById("playGameScreen");
+const newGameButton = document.getElementById("newGame");
 
 let currentGame = null;
 
@@ -92,6 +94,7 @@ function playtest(p1Board, p2Board){
 function newGameSetup(){
     startScreen.style.display = "grid";
     playScreen.style.display = "none";
+    endScreen.style.display = "none";
     allPlaced = false;
     selectSpace.innerHTML= "";
     newBoard = boardFactory(placementBoard, 10, 10);
@@ -113,20 +116,17 @@ function newGameSetup(){
         playerShips[i].visual.classList.add("ship");
         selectSpace.appendChild(playerShips[i].visual);
         playerShips[i].visual.style.display = "none"
-        playerShips[i].visual.style.minHeight="30px"
-        playerShips[i].visual.style.height="min(5vw, 10%)"
-        playerShips[i].visual.style.aspectRatio=`${playerShips[i].logical.length}/1`;
-        playerShips[i].horizontal=true;
+        playerShips[i].visual.style.minHeigth=`${30*playerShips[i].logical.length}px`;
+        playerShips[i].visual.style.height=`min(${5*playerShips[i].logical.length}vw, ${10*playerShips[i].logical.length}%)`;
+        playerShips[i].visual.style.aspectRatio=`1/${playerShips[i].logical.length}`;
+        playerShips[i].horizontal=false;
         playerShips[i].visual.addEventListener("click", function(){
-            console.log("rotating")
             if (playerShips[i].horizontal){
-                console.log("tovertical")
                 playerShips[i].horizontal=false;
                 playerShips[i].visual.style.minHeigth=`${30*playerShips[i].logical.length}px`;
                 playerShips[i].visual.style.height=`min(${5*playerShips[i].logical.length}vw, ${10*playerShips[i].logical.length}%)`;
                 playerShips[i].visual.style.aspectRatio=`1/${playerShips[i].logical.length}`;
             } else {
-                console.log("tohorizontal");
                 playerShips[i].horizontal=true;
                 playerShips[i].visual.style.minHeight="30px"
                 playerShips[i].visual.style.height="min(5vw, 10%)"
@@ -166,7 +166,6 @@ function newGameSetup(){
             });
 
             newBoard.displayGrid[i][j].addEventListener("click", function(){
-                console.log(i + " " + j)
                 if (currentShip >= playerShips.length) return;
                 if (playerShips[currentShip].horizontal){
                     if (!newBoard.gameBoard.placeShip(i, j, false, playerShips[currentShip].logical)) return;
@@ -219,6 +218,7 @@ function gameFactory(players){
     p2BoardDisplay.innerHTML = "";
     let boards = [boardFactory(p1BoardDisplay, 10, 10), boardFactory(p2BoardDisplay, 10, 10)];
     startScreen.style.display = "none";
+    endScreen.style.display = "none";
     playScreen.style.display = "grid";
 
     for (let i = 0; i < 2; i++){
@@ -237,7 +237,6 @@ function gameFactory(players){
             for (let row = 0; row < boards[i].height; row++){
                 for (let col = 0; col < boards[i].width; col++)
                     boards[((i+1)%2)].displayGrid[row][col].addEventListener("click", function (){
-                        console.log(row + " " + col + " shooting");
                         if (activePlayer != i) return;
                         if (boards[((i+1)%2)].gameBoard.board[row][col].isAttacked) return;
                         activePlayer = (activePlayer + 1)%2;
@@ -253,15 +252,10 @@ function gameFactory(players){
 
     function playRound(playerNr){
         if (players[playerNr].isAi){
-            console.log("AI Round:" + currentRound);
             aiShoot(players[playerNr], players[playerNr].otherBoard);
             currentRound++;
-            
             endRound(playerNr);
-        } else{
-            console.log("Human Round:" + currentRound);
-            activePlayer = playerNr;
-        }
+        } else activePlayer = playerNr;
     }
 
     function endRound(playerNr){
@@ -270,18 +264,23 @@ function gameFactory(players){
 
         if (boards[((playerNr+1)%2)].gameBoard.allSunk()){
             console.log(players[playerNr].playerName + " won on round " + currentRound);
-            endGame();
+            endGame(players[playerNr].playerName, currentRound);
             return;
         }
         playRound((playerNr + 1)%2);
     }
 
-    function endGame(){
-
+    function endGame(winner, round){
+        startScreen.style.display = "none";
+        endScreen.style.display = "grid";
+        playScreen.style.display = "none";
+        document.getElementById("endMessage").textContent = `${winner} won on round ${round}`;
     }
     return {
         playRound
     }
 }
 
+
+newGameButton.addEventListener("click", newGameSetup);
 newGameSetup();
